@@ -48,10 +48,11 @@ Cài đặt PHP
 
 Tạo tệp để kiểm tra PHP có cài thành công không
 
-*sudo nano /var/www/html/info.php*
+`*sudo nano /var/www/html/info.php*`
 
 Thêm câu lệnh sau vào tệp trên:
 
-```<?php
+```sh
+<?php
 phpinfo();
 ```
