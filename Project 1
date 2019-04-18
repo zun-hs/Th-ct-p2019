@@ -1,0 +1,9 @@
+# 1. cài đặt Apache
+Cập nhật trước khi cài update
+*sudo apt update*
+Cài apache2
+*sudo apt install apache2*
+Khởi động lại apache2
+*sudo systemctl start apache2.service*
+Kiểm tra phiên bản apache2
+*apache2 –v*
