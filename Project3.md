@@ -76,15 +76,15 @@ Bây giờ có thể chạy các lệnh này để cài đặt Nagios, init scri
 
 Cho phép Nagios khởi động cùng với hệ thống:
 
-`update-rc.d nagios defaults`
+`sudo update-rc.d nagios defaults`
 
 Bật các tính năng để Nagios Web UI có thể chạy
 
-`make install-webconf`
+` sudo make install-webconf`
 
-`a2enmod rewrite`
+`sudo a2enmod rewrite`
 
-`a2enmod cgi`
+`sudo a2enmod cgi`
 
 Cài đặt password cho nagiosadmin, khi đăng nhập Web:
 
