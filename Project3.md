@@ -56,7 +56,7 @@ Sau đó thay đổi thư mục được trích xuất:
 
 Trước khi xây dựng Nagios, phải định dạng nó. Nếu muốn định dạng nó để sử dụng postfix (có thể cài đặt bằng apt-get), hãy thêm *--with-mail=/usr/sbin/sendmail vào lệnh sau:*
 
-`./configure --with-nagios-group=nagios --with-command-group=nagcmd `
+`./configure --with-nagios-group=nagios --with-command-group=nagcmd`
 
 Biên dịch Nagios với lệnh này:
 
@@ -64,11 +64,11 @@ Biên dịch Nagios với lệnh này:
 
 Bây giờ có thể chạy các lệnh này để cài đặt Nagios, init script và các tệp cấu hình mẫu:
 
-`sudo make install `
+`sudo make install`
 
 `sudo make install-commandmode`
 
-`sudo make install-init `
+`sudo make install-init`
 
 `sudo make install-config`
 
@@ -80,7 +80,7 @@ Cho phép Nagios khởi động cùng với hệ thống:
 
 Bật các tính năng để Nagios Web UI có thể chạy
 
-` sudo make install-webconf`
+`sudo make install-webconf`
 
 `sudo a2enmod rewrite`
 
@@ -88,13 +88,13 @@ Bật các tính năng để Nagios Web UI có thể chạy
 
 Cài đặt password cho nagiosadmin, khi đăng nhập Web:
 
-`htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin`
+`sudo htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin`
 
 Nếu sử dụng tường lửa UFW, hãy thêm rule để mở port cho Web UI.
 
-`ufw allow Apache`
+`sudo ufw allow Apache`
 
-`ufw reload`
+`sudo ufw reload`
 
 ## 2.2.	Cài đặt Nagios Plugins
 
