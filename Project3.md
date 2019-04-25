@@ -134,6 +134,10 @@ Sau đó thay đổi thư mục được trích xuất:
 
 `./configure --enable-command-args --with-nagios-user=nagios --with-nagios-group=nagios --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu`
 
+**Lưu ý: trước khi sang bước tiếp theo cần kiểm tra đã cài xinetd chưa**
+
+`sudo apt-get install xinetd`
+
 Bây giờ hãy xây dựng và cài đặt NRPE và tập lệnh khởi động xinetd của nó bằng các lệnh sau:
 
 `make all `
@@ -158,3 +162,97 @@ Khởi động lại dịch vụ xinetd để khởi động NRPE:
 
 `sudo service xinetd restart `
 
+Khởi chạy động lại Apache và chạy nagios
+
+`sudo systemctl restart apache2`
+
+`sudo systemctl start nagios`
+
+# 4. Định dạng Nagios
+
+## 4.1. Giám sát máy chủ bằng NRPE
+
+**Trên máy chủ muốn theo dõi**
+
+Cài đặt Nagios Plugins và NRPE:
+
+`sudo apt-get install nagios-plugins nagios-nrpe-server`
+
+Định cấu hình allowed hosts
+
+`sudo vi /etc/nagios/nrpe.cfg`
+
+Tìm chỉ thị allowed_hosts và thêm địa chỉ IP của máy chủ Nagios
+
+`allowed_hosts=127.0.0.1,192.16.64.100`
+
+Định dạng lệnh Allowed NRPE
+
+Thay thế các giá trị thích hợp
+```
+server_address=client_private_IP
+
+allowed_hosts=nagios_server_private_IP
+
+command[check_hda1]=/usr/lib/nagios/plugins/check_disk -w 20% -c 10% -p /dev/vda
+```
+Khởi động lại NRPE để thay đổi có hiệu lực:
+
+`sudo service nagios-nrpe-server restart`
+
+***Trên máy chủ Nagios***
+
+Đặt tất cả các file cấu hình host giám sát vào một thư mục, sửa file cấu hình chính của nagios:
+
+`sudo vi /usr/local/nagios/etc/nagios.cfg`
+
+Tìm và bỏ "#" ở dòng:
+```
+...
+cfg_dir=/usr/local/nagios/etc/servers
+...
+```
+Tạo thư mục lưu trữ tệp cấu hình cho mỗi host sẽ giám sát:
+
+`sudo mkdir /usr/local/nagios/etc/servers`
+
+File cấu hình host cần giám sát:
+
+`sudo vi /usr/local/nagios/etc/servers/kma.cfg`
+
+Ở đây, sẽ giám sát dịch vụ PING, SSH và HTTP
+```
+define host {
+use			  		linux-server
+host_name			kma
+alias			  	kma
+address				192.168.64.132
+max_check_attempts		5
+check_period			    24x7
+notification_interval		30
+notification_period		  24x7
+}
+define service {
+use				  	generic-service
+host_name			kma
+service_description		PING
+check_command		      check_ping!100.0,20%!500.0,60%
+}
+define service {
+use				  	generic-service
+host_name			kma
+service_description		HTTP
+check_command		      check_http
+normal_check_interval	  5
+retry_check_interval		2
+}
+define service {
+use				  	generic-service		; Inherit default values from a template
+host_name			kma
+service_description		SSH
+check_command	      	check_ssh
+}
+```
+Sau khi chỉnh sửa xong, lưu lại file và khởi động lại nagios.
+
+`systemctl restart nagios`
